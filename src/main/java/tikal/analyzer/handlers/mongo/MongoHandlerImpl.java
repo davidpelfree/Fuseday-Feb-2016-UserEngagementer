@@ -6,14 +6,23 @@ import java.util.ArrayList;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+
+import tikal.analyzer.controller.AnalyzerController;
+
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import com.mongodb.MongoException;
 import com.mongodb.MongoClient;
 
 @Component
 public class MongoHandlerImpl implements MongoHandler {
+	
+	private final Logger LOGGER = LoggerFactory.getLogger(MongoHandlerImpl.class);
+
+	
 	private MongoCollection<Document> collection;
 
 	public MongoHandlerImpl() {
@@ -36,10 +45,10 @@ public class MongoHandlerImpl implements MongoHandler {
 			collection.deleteOne(query);
 
 		} catch (MongoException ex) {
-//			log.error("deleteMessage method", ex);
+			LOGGER.error("deleteMessage method", ex);
 			return false;
 		} catch (IllegalArgumentException e) {
-//			log.error("invalid Id for Msg - " + msgId);
+			LOGGER.error("invalid Id for Msg - " + msgId);
 			return false;
 		}
 

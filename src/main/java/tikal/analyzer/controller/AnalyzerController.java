@@ -3,6 +3,7 @@ package tikal.analyzer.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.tomcat.util.ExceptionUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
@@ -17,42 +18,45 @@ import tikal.analyzer.handlers.redis.RedisHandler;
 
 @Component
 public class AnalyzerController {
-	
-	private static final String USERS_KEY = "USERS";
-	private static final String CHANNELS_KEY = "USERS";
 
 	private final Logger LOGGER = LoggerFactory.getLogger(AnalyzerController.class);
-	 
+
 	@Autowired
 	private MongoHandler mongoHandler;
-	
+
 	@Autowired
 	private RedisHandler redisHandler;
-	
-	@Scheduled(cron="0 0 */1 * * *")
-	public void doWorkHourly() {
-		
-		DateTime from = new DateTime(DateTimeZone.UTC).minusHours(1);
-		DateTime to = new DateTime(DateTimeZone.UTC);
-		
-		long currentTime = to.getMillis();
-	    long roundedHourly = currentTime - (currentTime % (60*60*1000));
-		
-		LOGGER.info("Starting {} fetch and store cycle", roundedHourly);
-		
-		List<MongoSlackRawData> rawData = mongoHandler.getRawData(from.getMillis(), to.getMillis());
-		
-		LOGGER.info("Fetched {} items from Mongo.  From: {}, To: {}", rawData.size(), from, to);
-		
-		List<String> users = rawData.stream().map(item -> item.getUserName()).collect(Collectors.toList());
-		int numUsersStored = redisHandler.storeUsers(roundedHourly + "_" + USERS_KEY, users);
-		
-		List<String> channels = rawData.stream().map(item -> item.getChannel()).collect(Collectors.toList());
-		int numChannelsStored = redisHandler.storeChannels(roundedHourly + "_" + CHANNELS_KEY, channels);
-		
-		LOGGER.info("Stored {} users and {} channels to redis successfully", numUsersStored, numChannelsStored);
+
+	@Scheduled(cron="*/30 * * * * *")
+	public void analyze() {
+
+		try {
+
+			DateTime from = new DateTime(DateTimeZone.UTC).minusSeconds(30);
+			DateTime to = new DateTime(DateTimeZone.UTC);
+
+			long currentTime = to.getMillis();
+			long roundedHourly = currentTime - (currentTime % (60*60*1000));
+
+			LOGGER.info("Starting {} fetch and store cycle", roundedHourly);
+
+			List<MongoSlackRawData> rawData = mongoHandler.getRawData(from.getMillis(), to.getMillis());
+
+			LOGGER.info("Fetched {} items from Mongo.  From: {}, To: {}", rawData.size(), from, to);
+
+			List<String> users = rawData.stream().map(item -> item.getUserName()).collect(Collectors.toList());
+			int numUsersStored = redisHandler.storeUsers(roundedHourly + "", users);
+
+			List<String> channels = rawData.stream().map(item -> item.getChannel()).collect(Collectors.toList());
+			int numChannelsStored = redisHandler.storeChannels(roundedHourly + "", channels);
+
+			LOGGER.info("Stored {} users and {} channels to redis successfully", numUsersStored, numChannelsStored);
+
+		} catch (Exception e) {
+			LOGGER.error("Failed to run! Exception: {}, ST: {}", e.getMessage(), e.getStackTrace().toString());
+		}
 	}
 
 
-	
+
 }
