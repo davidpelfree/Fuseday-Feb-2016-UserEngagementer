@@ -27,7 +27,7 @@ public class AnalyzerController {
 	@Autowired
 	private RedisHandler redisHandler;
 
-	@Scheduled(cron="*/30 * * * * *")
+	@Scheduled(cron="*/5 * * * * *")
 	public void analyze() {
 
 		try {
