@@ -4,7 +4,8 @@ import java.util.List;
 
 public interface RedisHandler {
 	
-	public int store (List<RedisKey> keys);
+	public int storeUsers (String key, List<String> users);
 	
+	public int storeChannels (String key, List<String> channels);
 
 }
