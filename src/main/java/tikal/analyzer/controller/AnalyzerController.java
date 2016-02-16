@@ -53,7 +53,7 @@ public class AnalyzerController {
 			LOGGER.info("Stored {} users and {} channels to redis successfully", numUsersStored, numChannelsStored);
 
 		} catch (Exception e) {
-			LOGGER.error("Failed to run! Exception: {}, ST: {}", e.getMessage(), e.getStackTrace().toString());
+			e.printStackTrace();
 		}
 	}
 
