@@ -83,7 +83,7 @@ public class MongoHandlerImpl implements MongoHandler {
 		MongoSlackRawData result = new MongoSlackRawData();
 		result.setUserName(data.getString("user"));
 		result.setChannel(data.getString("channel"));
-		result.setTimestamp(data.getDouble("timestamp").longValue());
+		result.setTimestamp(data.getLong("timestamp"));
 
 		return result;
 	}
