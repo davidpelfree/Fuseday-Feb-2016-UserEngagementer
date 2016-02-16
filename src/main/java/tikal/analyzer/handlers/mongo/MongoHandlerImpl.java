@@ -23,6 +23,13 @@ public class MongoHandlerImpl implements MongoHandler {
 		this.collection = database.getCollection("slackPost");
 	}
 
+	public MongoHandlerImpl(String host) {
+		super();
+		MongoClient mongoClient = new MongoClient( host , 27017 );
+		MongoDatabase database = mongoClient.getDatabase("test");
+		this.collection = database.getCollection("slackPost");
+	}
+
 	public boolean deleteRawData(String msgId) {
 		try {
 			Document query = new Document("_id", new ObjectId(msgId));

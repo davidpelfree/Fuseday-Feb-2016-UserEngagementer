@@ -8,16 +8,14 @@ public class MongoSlackRawData implements Serializable {
 	
 	private String userName;
 	private String channel;
-	private String day;
-	private String hour;
+	private long timestamp;
 	
 	public MongoSlackRawData(){}
-	public MongoSlackRawData(String userName, String channel, String day, String hour) {
+	public MongoSlackRawData(String userName, String channel, long timestamp) {
 		super();
 		this.userName = userName;
 		this.channel = channel;
-		this.day = day;
-		this.hour = hour;
+		this.timestamp = timestamp;
 	}
 	
 	public String getUserName() {
@@ -32,73 +30,40 @@ public class MongoSlackRawData implements Serializable {
 	public void setChannel(String channel) {
 		this.channel = channel;
 	}
-	public String getDay() {
-		return day;
+	public long getTimestamp() {
+		return timestamp;
 	}
-	public void setDay(String day) {
-		this.day = day;
-	}
-	public String getHour() {
-		return hour;
-	}
-	public void setHour(String hour) {
-		this.hour = hour;
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
 	}
 
-	public void setTimestamp (long timestamp) {
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		MongoSlackRawData that = (MongoSlackRawData) o;
+
+		if (timestamp != that.timestamp) return false;
+		if (userName != null ? !userName.equals(that.userName) : that.userName != null) return false;
+		return channel != null ? channel.equals(that.channel) : that.channel == null;
+
 	}
-	
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((channel == null) ? 0 : channel.hashCode());
-		result = prime * result + ((day == null) ? 0 : day.hashCode());
-		result = prime * result + ((hour == null) ? 0 : hour.hashCode());
-		result = prime * result + ((userName == null) ? 0 : userName.hashCode());
+		int result = userName != null ? userName.hashCode() : 0;
+		result = 31 * result + (channel != null ? channel.hashCode() : 0);
+		result = 31 * result + (int) (timestamp ^ (timestamp >>> 32));
 		return result;
 	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		MongoSlackRawData other = (MongoSlackRawData) obj;
-		if (channel == null) {
-			if (other.channel != null)
-				return false;
-		} else if (!channel.equals(other.channel))
-			return false;
-		if (day == null) {
-			if (other.day != null)
-				return false;
-		} else if (!day.equals(other.day))
-			return false;
-		if (hour == null) {
-			if (other.hour != null)
-				return false;
-		} else if (!hour.equals(other.hour))
-			return false;
-		if (userName == null) {
-			if (other.userName != null)
-				return false;
-		} else if (!userName.equals(other.userName))
-			return false;
-		return true;
-	}
-	
+
 	@Override
 	public String toString() {
-		return "SlackRawData [userName=" + userName + ", channel=" + channel + ", day=" + day + ", hour=" + hour + "]";
+		return "MongoSlackRawData{" +
+				"userName='" + userName + '\'' +
+				", channel='" + channel + '\'' +
+				", timestamp=" + timestamp +
+				'}';
 	}
-	
-	
-	
-	
-	
-	
 }
