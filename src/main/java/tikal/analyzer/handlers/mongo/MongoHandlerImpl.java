@@ -23,7 +23,7 @@ public class MongoHandlerImpl implements MongoHandler {
 		this.collection = database.getCollection("slackPost");
 	}
 
-	public boolean deleteMessage(String msgId) {
+	public boolean deleteRawData(String msgId) {
 		try {
 			Document query = new Document("_id", new ObjectId(msgId));
 			collection.deleteOne(query);
