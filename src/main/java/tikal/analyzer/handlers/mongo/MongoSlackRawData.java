@@ -8,10 +8,10 @@ public class MongoSlackRawData implements Serializable {
 	
 	private String userName;
 	private String channel;
-	private long timestamp;
+	private Long timestamp;
 	
 	public MongoSlackRawData(){}
-	public MongoSlackRawData(String userName, String channel, long timestamp) {
+	public MongoSlackRawData(String userName, String channel, Long timestamp) {
 		super();
 		this.userName = userName;
 		this.channel = channel;
@@ -30,10 +30,10 @@ public class MongoSlackRawData implements Serializable {
 	public void setChannel(String channel) {
 		this.channel = channel;
 	}
-	public long getTimestamp() {
+	public Long getTimestamp() {
 		return timestamp;
 	}
-	public void setTimestamp(long timestamp) {
+	public void setTimestamp(Long timestamp) {
 		this.timestamp = timestamp;
 	}
 
